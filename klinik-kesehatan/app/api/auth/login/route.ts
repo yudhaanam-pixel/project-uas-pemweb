@@ -1,43 +1,52 @@
-import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import { createClient } from '@/lib/supabase/client';
+import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import bcrypt from "bcryptjs";
+import { SignJWT } from "jose";
+import { createClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
   try {
-    const supabase = createClient();
     const { email, password } = await request.json();
 
-    // 1. Ambil data akun berdasarkan email dari tabel 'pengguna'
+    if (!email || !password) {
+      return NextResponse.json({ error: "Email dan password wajib diisi" }, { status: 400 });
+    }
+
+    const supabase = createClient();
     const { data: pengguna, error } = await supabase
-      .from('pengguna')
-      .select('*')
-      .eq('email', email)
+      .from("pengguna")
+      .select("id, nama, peran, password_hash")
+      .eq("email", email)
       .single();
 
-    // Jika email tidak ditemukan atau error
     if (error || !pengguna) {
-      return NextResponse.json({ error: 'Email atau password salah!' }, { status: 401 });
+      return NextResponse.json({ error: "Email atau password salah" }, { status: 401 });
     }
 
-    // 2. Bandingkan password inputan form dengan password_hash di database
-    const passwordCocok = await bcrypt.compare(password, pengguna.password_hash);
-
-    if (!passwordCocok) {
-      return NextResponse.json({ error: 'Email atau password salah!' }, { status: 401 });
+    const cocok = await bcrypt.compare(password, pengguna.password_hash);
+    if (!cocok) {
+      return NextResponse.json({ error: "Email atau password salah" }, { status: 401 });
     }
 
-    // 3. Jika cocok, buat data session respon balik ke frontend
-    return NextResponse.json({
-      success: true,
-      message: 'Login berhasil!',
-      user: {
-        id: pengguna.id,
-        nama: pengguna.nama,
-        peran: pengguna.peran
-      }
+    const key = new TextEncoder().encode(process.env.JWT_SECRET);
+    const token = await new SignJWT({ id: pengguna.id, nama: pengguna.nama, peran: pengguna.peran })
+      .setProtectedHeader({ alg: "HS256" })
+      .setExpirationTime("7d")
+      .sign(key);
+
+    (await cookies()).set("session", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
     });
 
+    return NextResponse.json({
+      success: true,
+      user: { id: pengguna.id, nama: pengguna.nama, peran: pengguna.peran },
+    });
   } catch (err: any) {
-    return NextResponse.json({ error: 'Server Error: ' + err.message }, { status: 500 });
+    return NextResponse.json({ error: "Server error: " + err.message }, { status: 500 });
   }
 }

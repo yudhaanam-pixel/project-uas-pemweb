@@ -1,87 +1,71 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email || !password) return alert('Email dan password wajib diisi!');
-
+    setError("");
     setLoading(true);
-
     try {
-      // 1. Menembak ke API backend (Route Handler) yang memproses pencocokan Bcrypt
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
-      const hasil = await response.json();
-
-      if (response.ok && hasil.success) {
-        alert('🎉 ' + hasil.message);
-
-        // 2. Simpan session user ke LocalStorage agar loginnya awet saat halaman di-refresh
-        localStorage.setItem('user_session', JSON.stringify(hasil.user));
-
-        // 3. BYPASS ALUR REDIRECT SEPERTI KODINGAN LAMA KAMU (Berdasarkan peran/role user)
-        if (email === 'admin@klinik.com' || hasil.user.peran === 'admin') {
-          router.push('/admin/layanan');
-        } else if (hasil.user.peran === 'dokter') {
-          router.push('/dokter');
-        } else {
-          router.push('/'); // Jika pasien (Bigel), kembali ke Beranda Utama
-        }
-
-      } else {
-        alert('❌ Login Gagal: ' + (hasil.error || 'Periksa kembali email dan password Anda.'));
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error ?? "Login gagal");
+        return;
       }
-    } catch (error: any) {
-      alert('❌ Server Error: ' + error.message);
+      router.push(data.user.peran === "admin" ? "/admin" : "/");
+      router.refresh();
+    } catch {
+      setError("Tidak bisa terhubung ke server");
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-900 text-white p-4">
-      <form onSubmit={handleLogin} className="bg-zinc-800 p-8 rounded-lg border border-zinc-700 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center text-green-400">Masuk Aplikasi</h2>
-        <div className="space-y-4 text-black">
-          <input 
-            type="email" 
-            placeholder="Email" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
-            className="w-full p-2.5 rounded bg-white font-medium outline-none" 
-            required 
-            disabled={loading}
-          />
-          <input 
-            type="password" 
-            placeholder="Password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
-            className="w-full p-2.5 rounded bg-white font-medium outline-none" 
-            required 
-            disabled={loading}
-          />
-          <button 
-            type="submit" 
-            className="w-full bg-green-600 hover:bg-green-700 text-white font-bold p-2.5 rounded transition-all disabled:bg-green-800 disabled:text-zinc-400"
-            disabled={loading}
-          >
-            {loading ? 'Memverifikasi...' : 'Login'}
-          </button>
-        </div>
+    <main className="mx-auto max-w-sm p-6">
+      <h1 className="mb-4 text-2xl font-bold">Masuk</h1>
+      <form onSubmit={handleSubmit} className="space-y-3">
+        <input
+          type="email"
+          required
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full rounded border p-2"
+        />
+        <input
+          type="password"
+          required
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full rounded border p-2"
+        />
+        {error && <p className="text-sm text-red-600">{error}</p>}
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full rounded bg-blue-600 p-2 text-white disabled:opacity-50"
+        >
+          {loading ? "Memproses..." : "Masuk"}
+        </button>
       </form>
-    </div>
+      <p className="mt-4 text-sm">
+        Belum punya akun? <a href="/register" className="text-blue-600 underline">Daftar</a>
+      </p>
+    </main>
   );
 }
