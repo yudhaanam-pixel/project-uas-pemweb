@@ -68,7 +68,7 @@ export default function DashboardPasien() {
     <main className="min-h-screen bg-sky-50 px-4 py-10">
       <div className="mx-auto max-w-6xl">
 
-        <section className="rounded-2xl bg-gradient-to-r from-blue-700 to-sky-400 p-8 text-white shadow-lg">
+        <section className="rounded-2xl bg-gradient-to-right from-blue-700 to-sky-400 p-8 text-white shadow-lg">
           <p className="text-sm font-medium">
             WELLCARE MEDICAL CLINIC
           </p>
