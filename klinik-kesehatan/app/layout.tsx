@@ -19,15 +19,20 @@ export const metadata: Metadata = {
   description: "Sistem informasi pendaftaran dan antrean klinik",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+// Perbaikan tipe data parameter children standar Next.js
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html
       lang="id"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col bg-zinc-50 dark:bg-black">
         <Suspense
-          fallback={<nav className="border-b px-6 py-3 font-bold">Klinik</nav>}
+          fallback={<nav className="border-b px-6 py-3 font-bold bg-white text-black">Klinik</nav>}
         >
           <Navbar />
         </Suspense>
