@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
 interface Jadwal {
@@ -22,7 +22,6 @@ interface Dokter {
 const NAMA_HARI = ['', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
 
 export default function CRUDJadwal() {
-  const supabase = createClient();
   const [jadwalList, setJadwalList] = useState<Jadwal[]>([]);
   const [dokterList, setDokterList] = useState<Dokter[]>([]);
   
@@ -32,7 +31,9 @@ export default function CRUDJadwal() {
   const [jamSelesai, setJamSelesai] = useState('14:00');
   const [kuota, setKuota] = useState('20');
 
-  const fetchData = async () => {
+  // Inisialisasi di dalam fungsi agar aman saat build-time Vercel
+  const fetchData = useCallback(async () => {
+    const supabase = createClient();
     const { data: jadwal } = await supabase
       .from('jadwal_praktik')
       .select('*, dokter(nama, spesialis)')
@@ -45,17 +46,18 @@ export default function CRUDJadwal() {
 
     if (jadwal) setJadwalList(jadwal as any);
     if (dokter) setDokterList(dokter);
-  };
+  }, []);
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   // 1. TAMBAH JADWAL (CREATE)
   const handleTambah = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!dokterId) return alert('Silakan pilih dokter terlebih dahulu!');
 
+    const supabase = createClient();
     const { error } = await supabase
       .from('jadwal_praktik')
       .insert([{
@@ -75,8 +77,9 @@ export default function CRUDJadwal() {
     }
   };
 
-  // 2. UBAH STATUS / NONAKTIFKAN JADWAL (UPDATE) -> BARU DITAMBAHKAN
+  // 2. UBAH STATUS / NONAKTIFKAN JADWAL (UPDATE)
   const handleToggleAktif = async (id: number, statusSekarang: boolean) => {
+    const supabase = createClient();
     const { error } = await supabase
       .from('jadwal_praktik')
       .update({ aktif: !statusSekarang })
