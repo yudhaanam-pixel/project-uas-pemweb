@@ -8,9 +8,11 @@ import {
 
 type Status = "idle" | "loading" | "error";
 
-export default function FormKunjungan() {
+export default function FormKunjungan({ awal }: { awal?: Partial<InputKunjungan> }) {
   const router = useRouter();
-  const [form, setForm] = useState<InputKunjungan>({ poli: "", tanggal: "", jam: "", keluhan: "" });
+  const [form, setForm] = useState<InputKunjungan>({
+    poli: awal?.poli ?? "", tanggal: awal?.tanggal ?? "", jam: awal?.jam ?? "", keluhan: "",
+  });
   const [errors, setErrors] = useState<ErrorKunjungan>({});
   const [status, setStatus] = useState<Status>("idle");
   const [pesan, setPesan] = useState("");
