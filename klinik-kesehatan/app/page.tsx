@@ -51,12 +51,12 @@ export default function Beranda() {
             <a href="#dokter" className="hover:text-blue-600">Dokter</a>
             <a href="#janji" className="hover:text-blue-600">Kontak</a>
           </nav>
-          <Link href="/kunjungan/baru" className={btnUtama + " !px-5 !py-2.5"}>Buat Janji →</Link>
+          <Link href="/kunjungan/baru" className={btnUtama + " px-5 py-2.5"}>Buat Janji →</Link>
         </div>
       </header>
 
       {/* HERO */}
-      <section id="beranda" className="bg-gradient-to-b from-sky-50 to-white">
+      <section id="beranda" className="bg-gradient-to-blue from-sky-50 to-white">
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-14 md:grid-cols-2 md:py-20">
           <div>
             <p className="text-xs font-semibold tracking-widest text-blue-600">KESEHATAN ANDA, PRIORITAS KAMI</p>
@@ -82,7 +82,7 @@ export default function Beranda() {
             <div className="absolute -right-4 top-6 h-72 w-72 rounded-full bg-sky-200/70 blur-sm md:h-80 md:w-80" />
             <div className="absolute bottom-0 right-10 h-40 w-40 rounded-full bg-sky-300/60" />
             {/* GANTI placeholder ini dengan foto: <Image src="/images/hero-dokter.png" ... /> */}
-            <div className="relative grid h-96 place-items-center rounded-[2.5rem] bg-gradient-to-br from-sky-100 to-blue-200 text-[9rem]">
+            <div className="relative grid h-96 place-items-center rounded-[2.5rem] bg-gradient-to-blue from-sky-100 to-blue-200 text-[9rem]">
               👩‍⚕️
             </div>
             <div className="absolute -left-2 top-8 flex items-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-blue-900 shadow-xl">
@@ -96,7 +96,7 @@ export default function Beranda() {
       <section className="mx-auto max-w-6xl px-5 py-10">
         <div className="grid gap-5 lg:grid-cols-[1.1fr_1fr_1fr_1fr]">
           {/* GANTI dengan foto resepsionis klinik */}
-          <div className="grid min-h-48 place-items-center rounded-2xl bg-gradient-to-br from-sky-100 to-sky-200 text-6xl">🏥</div>
+          <div className="grid min-h-48 place-items-center rounded-2xl bg-gradient-to-blue from-sky-100 to-sky-200 text-6xl">🏥</div>
           {KARTU.map((k) => (
             <div key={k.judul} className="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
               <span className="grid h-11 w-11 place-items-center rounded-full bg-sky-100 text-xl">{k.ikon}</span>
@@ -124,7 +124,7 @@ export default function Beranda() {
             {DOKTER.map((d) => (
               <article key={d.nama} className="min-w-48 snap-start rounded-2xl border border-slate-100 bg-white p-5 text-center shadow-sm">
                 {/* GANTI dengan foto dokter */}
-                <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-gradient-to-br from-sky-100 to-blue-200 text-2xl font-bold text-blue-700">
+                <div className="mx-auto grid h-24 w-24 place-items-center rounded-full bg-gradient-to-blue from-sky-100 to-blue-200 text-2xl font-bold text-blue-700">
                   {d.inisial}
                 </div>
                 <h3 className="mt-4 text-sm font-bold text-blue-950">{d.nama}</h3>
@@ -143,7 +143,7 @@ export default function Beranda() {
       <section id="layanan" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-10">
         <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
           {/* GANTI dengan foto perawat */}
-          <div className="relative grid min-h-64 place-items-center rounded-2xl bg-gradient-to-br from-sky-100 to-blue-100 text-8xl">
+          <div className="relative grid min-h-64 place-items-center rounded-2xl bg-gradient-to-blue from-sky-100 to-blue-100 text-8xl">
             🧑‍⚕️
             <div className="absolute right-4 top-1/2 rounded-xl bg-white px-4 py-2 text-xs font-semibold text-blue-900 shadow-lg">
               💙 Perawatan Lebih Baik,<br />Hari Esok Lebih Cerah
@@ -174,7 +174,7 @@ export default function Beranda() {
 
       {/* JANJI TEMU */}
       <section id="janji" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-10">
-        <div className="grid items-center gap-8 rounded-3xl bg-gradient-to-r from-blue-600 to-sky-400 p-8 md:grid-cols-[1fr_1.4fr]">
+        <div className="grid items-center gap-8 rounded-3xl bg-gradient-to-red from-blue-600 to-sky-400 p-8 md:grid-cols-[1fr_1.4fr]">
           <div className="flex items-start gap-4 text-white">
             <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-white/20 text-2xl">📅</span>
             <div>
