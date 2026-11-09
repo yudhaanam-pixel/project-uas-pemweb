@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import bcrypt from "bcryptjs";
-import { SignJWT } from "jose";
+import { buatSesi } from "@/lib/session";
 import { createClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
@@ -28,19 +27,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email atau password salah" }, { status: 401 });
     }
 
-    const key = new TextEncoder().encode(process.env.JWT_SECRET);
-    const token = await new SignJWT({ id: pengguna.id, nama: pengguna.nama, peran: pengguna.peran })
-      .setProtectedHeader({ alg: "HS256" })
-      .setExpirationTime("7d")
-      .sign(key);
-
-    (await cookies()).set("session", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: 60 * 60 * 24 * 7,
-    });
+    await buatSesi({ uid: pengguna.id, peran: pengguna.peran, nama: pengguna.nama });
 
     return NextResponse.json({
       success: true,

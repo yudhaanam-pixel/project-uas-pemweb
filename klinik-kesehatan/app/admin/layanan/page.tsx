@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
+const supabase = createClient();
+
 interface Layanan {
   id: number;
   nama: string;
