@@ -25,8 +25,10 @@ npm install
 Buat file `.env.local` di folder `klinik-kesehatan` dan sesuaikan kredensial Supabase Anda:
 ```env
 NEXT_PUBLIC_SUPABASE_URL=isi_url_supabase_anda
-NEXT_PUBLIC_SUPABASE_ANON_KEY=isi_anon_key_supabase_anda
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=isi_publishable_key_supabase_anda
 ```
+
+Untuk deployment di Vercel, tambahkan kedua variabel tersebut pada **Project Settings → Environment Variables** untuk environment yang digunakan. Jangan gunakan nama `NEXT_PUBLIC_SUPABASE_ANON_KEY`; aplikasi membaca `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
 
 ### 3. Menjalankan Aplikasi
 ```bash

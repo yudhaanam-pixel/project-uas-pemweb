@@ -19,8 +19,6 @@ interface Kunjungan {
 }
 
 export default function DashboardDokter() {
-  const supabase = createClient();
-  
   // State Utama
   const [kunjunganList, setKunjunganList] = useState<Kunjungan[]>([]);
   const [pasienAktif, setPasienAktif] = useState<Kunjungan | null>(null);
@@ -36,6 +34,7 @@ export default function DashboardDokter() {
 
   // 1. Ambil data pasien dengan status 'dipanggil' atau 'diperiksa'
   const fetchAntrean = useCallback(async () => {
+    const supabase = createClient();
     setLoading(true);
     const today = new Date().toISOString().split('T')[0];
 
@@ -62,7 +61,7 @@ export default function DashboardDokter() {
       if (sedangDiperiksa) setPasienAktif(sedangDiperiksa);
     }
     setLoading(false);
-  }, [supabase]);
+  }, []);
 
   useEffect(() => {
     fetchAntrean();
@@ -70,6 +69,7 @@ export default function DashboardDokter() {
 
   // 2. Alur Transisi Ala: Mengubah status dari 'dipanggil' menjadi 'diperiksa'
   const handleMulaiPeriksa = async (kunjungan: Kunjungan) => {
+    const supabase = createClient();
     const { error } = await supabase
       .from('kunjungan')
       .update({ status: 'diperiksa' })
@@ -88,6 +88,8 @@ export default function DashboardDokter() {
     e.preventDefault();
     if (!pasienAktif) return;
     if (!diagnosis) return alert('Diagnosis wajib diisi!');
+
+    const supabase = createClient();
 
     // Langkah A: Simpan rekam medis ke database
     const { error: rmError } = await supabase

@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 
-const supabase = createClient();
-
 interface Layanan {
   id: number;
   nama: string;
@@ -18,6 +16,7 @@ export default function CRUDLayanan() {
   const [deskripsi, setDeskripsi] = useState('');
 
   const fetchLayanan = async () => {
+    const supabase = createClient();
     const { data, error } = await supabase
       .from('layanan')
       .select('*')
@@ -33,6 +32,7 @@ export default function CRUDLayanan() {
     e.preventDefault();
     if (!nama) return alert('Nama layanan harus diisi!');
 
+    const supabase = createClient();
     const { error } = await supabase
       .from('layanan')
       .insert([{ nama, deskripsi, aktif: true }]);
@@ -47,6 +47,7 @@ export default function CRUDLayanan() {
   };
 
   const handleToggleAktif = async (id: number, statusSekarang: boolean) => {
+    const supabase = createClient();
     const { error } = await supabase
       .from('layanan')
       .update({ aktif: !statusSekarang })
